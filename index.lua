@@ -4,7 +4,6 @@
 
 --Variables
 local pad = Controls.read()
-local antpad = pad
 local usuario
 local cumpledia, cumplemes
 local firm1, firm2, firm3
@@ -19,7 +18,6 @@ local hora
 local cumple
 local firmware
 local kernel
-
 
 
 --Colores
@@ -38,15 +36,16 @@ function main()
     Screen.refresh()
     Screen.clear(TOP_SCREEN)
 	Screen.clear(BOTTOM_SCREEN)
-	Screen.fillRect(0,0, 1000, 1000, colores.azul, BOTTOM_SCREEN)
 	getVariables()
-	hola = "Hola, "
-	hola += usuario
-    Screen.debugPrint(5,5, hola, colores.amarillo, TOP_SCREEN)	
-	Screen.debugPrint(5,15,cumple, colores. blanco, TOP_SCREEN)
-	Screen.debugPrint(5,25, firmware, colores.blanco, TOP_SCREEN)
-	Screen.debugPrint(5,35, kernel, colores.blanco, TOP_SCREEN)
-	Screen.debugPrint(0,0, "Pulsa B para cerrar", colores.blanco, BOTTOM_SCREEN)
+    Screen.debugPrint(5,5, "Hola, "..usuario, colores.amarillo, TOP_SCREEN)	
+	Screen.debugPrint(20,30,cumple, colores. blanco, TOP_SCREEN)
+	Screen.debugPrint(20,45, firmware, colores.blanco, TOP_SCREEN)
+	Screen.debugPrint(20,60, kernel, colores.blanco, TOP_SCREEN)
+	
+	Screen.debugPrint(0,0, hora, colores.verde, BOTTOM_SCREEN)
+	Screen.debugPrint(100,0, fecha, colores.verde, BOTTOM_SCREEN)
+	Screen.debugPrint(200, 0, bateria, colores.rojo, BOTTOM_SCREEN)	
+	Screen.debugPrint(0,50, "Pulsa B para cerrar", colores.azul, BOTTOM_SCREEN)
     Screen.flip()
 end
 
@@ -68,23 +67,54 @@ function getVariables()
 	if d == 7 then d = "Dom" end
 	
 
-	fecha = d + '/' + mes + '/' + ano
-	hora = h + ':' + m + ':' + s
-	cumple = "Cumple:" + cumpledia + '-' + cumplemes
-	firmware = "Ver. " + firm1 + firm2 + firm3 + ' ' + region
-	kernel = "Kernel: " + kernel1 + kernel2 + kernel3
-	bateria = bateria + "%"
+	fecha = d .. '/' .. mes .. '/' .. ano
+	hora = h .. ':' .. m .. ':' .. s
+	cumple = "Cumple: " .. cumpledia .. '-' .. cumplemes
+	firmware = "Ver. " .. firm1 .. firm2 .. firm3 .. ' ' .. region
+	kernel = "Kernel: " .. kernel1 .. kernel2 .. kernel3
+	bateria = bateria .. "%"
 	
 end
 
 main()
 while true do
-	if Controls.check(pad,KEY_B) and not Controls.check(antpad,KEY_B) then
+	if Controls.check(pad,KEY_B) then
 		System.exit()	
-	end		
-	Screen.refresh()
-	Screen.debugPrint(0,0, hora, colores.verde, TOP_SCREEN)
-	Screen.debugPrint(15,0, fecha, colores.verde, TOP_SCREEN)
-	Screen.debugPrint(50, 0, bateria, colores.rojo, TOP_SCREEN)
-	main()
+	end	
+	
+	hn, mn, sn = System.getTime()
+	if not hn == h or not mn == m or not sn == s then		
+		refresca();
+	end
+--	checkNuevaBateria()
+--	checkNuevaFecha()
+end
+
+
+
+function refresca()
+    Screen.refresh()
+	Screen.clear(BOTTOM_SCREEN)
+		
+	h,m,s = System.getTime() 		
+	hora = h .. ':' .. m .. ':' .. s
+	
+	Screen.debugPrint(0,0, hora, colores.verde, BOTTOM_SCREEN)
+	Screen.debugPrint(100,0, fecha, colores.verde, BOTTOM_SCREEN)
+	Screen.debugPrint(200, 0, bateria, colores.rojo, BOTTOM_SCREEN)	
+	Screen.debugPrint(0,50, "Pulsa B para cerrar", colores.azul, BOTTOM_SCREEN)
+    Screen.flip()
+end
+
+function checkNuevaBateria()
+	if not bateria == System.getBatteryLife() then
+		main();
+	end
+end
+
+function checkNuevaFecha()
+	dn, mn, an = System.getDate()
+	if not dn == d or not mn == mes or not an == ano then
+		main();
+	end
 end

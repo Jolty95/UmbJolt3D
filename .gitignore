@@ -3,6 +3,11 @@
 *.luac.out
 *.tar.gz
 
+# Archivos compilados 
+*.cia
+*.3dsx
+*.smdh
+
 # Archivos objeto
 *.o
 *.os
