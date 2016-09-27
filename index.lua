@@ -78,12 +78,14 @@ end
 
 main()
 while true do
+	pad = Controls.read()
+
 	if Controls.check(pad,KEY_B) then
 		System.exit()	
 	end	
 	
 	hn, mn, sn = System.getTime()
-	if not hn == h or not mn == m or not sn == s then		
+	if not sn == s then		
 		refresca();
 	end
 --	checkNuevaBateria()
@@ -101,8 +103,8 @@ function refresca()
 	
 	Screen.debugPrint(0,0, hora, colores.verde, BOTTOM_SCREEN)
 	Screen.debugPrint(100,0, fecha, colores.verde, BOTTOM_SCREEN)
-	Screen.debugPrint(200, 0, bateria, colores.rojo, BOTTOM_SCREEN)	
-	Screen.debugPrint(0,50, "Pulsa B para cerrar", colores.azul, BOTTOM_SCREEN)
+	Screen.debugPrint(220, 0, bateria, colores.rojo, BOTTOM_SCREEN)	
+	Screen.debugPrint(0,150, "Pulsa B para cerrar", colores.azul, BOTTOM_SCREEN)
     Screen.flip()
 end
 
