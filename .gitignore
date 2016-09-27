@@ -1,47 +1,47 @@
-# Windows image file caches
-Thumbs.db
-ehthumbs.db
+# Archivos compilados de LUA
+*.src.rock
+*.luac.out
+*.tar.gz
 
-# Folder config file
-Desktop.ini
+# Archivos objeto
+*.o
+*.os
+*.ko
+*.obj
+*.elf
 
-# Recycle Bin used on file shares
-$RECYCLE.BIN/
+# Cabeceras precompiladas
+*.gch
+*.pch
 
-# Windows Installer files
-*.cab
-*.msi
-*.msm
-*.msp
+# Librerias
+*.lib
+*.a
+*.la
+*.lo
+*.def
+*.exp
 
-# Windows shortcuts
-*.lnk
+# Objetos dinamicos
+*.dll
+*.so
+*.so.*
+*.dylib
 
-# =========================
-# Operating System Files
-# =========================
+# Ejecutables
+*.exe
+*.out
+*.app
+*.i*86
+*.x86_64
+*.hex
 
-# OSX
-# =========================
+# Otros
 
-.DS_Store
-.AppleDouble
-.LSOverride
-
-# Thumbnails
-._*
-
-# Files that might appear in the root of a volume
-.DocumentRevisions-V100
-.fseventsd
-.Spotlight-V100
-.TemporaryItems
-.Trashes
-.VolumeIcon.icns
-
-# Directories potentially created on remote AFP share
-.AppleDB
-.AppleDesktop
-Network Trash Folder
-Temporary Items
-.apdisk
+Builder/*.bin
+Builder/*.rsf
+Builder/*.lua
+Builder/*.bat
+Builder/romfs
+Builder/*.cia
+Builder/*.sh
