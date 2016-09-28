@@ -5,19 +5,15 @@
 --Variables
 local pad = Controls.read()
 local usuario
-local cumpledia, cumplemes
-local firm1, firm2, firm3
-local kernel1, kernel2, kernel3
-local region
 local bateria
-local h, m, s
-local d, mes, ano
 
-local fecha
-local hora
-local cumple
-local firmware
-local kernel
+--Variables formateadas
+local fechaF
+local horaF
+local cumpleF
+local firmwareF
+local kernelF
+local bateriaF
 
 
 --Colores
@@ -36,46 +32,127 @@ function main()
     Screen.refresh()
     Screen.clear(TOP_SCREEN)
 	Screen.clear(BOTTOM_SCREEN)
-	getVariables()
     Screen.debugPrint(5,5, "Hola, "..usuario, colores.amarillo, TOP_SCREEN)	
-	Screen.debugPrint(20,30,cumple, colores. blanco, TOP_SCREEN)
-	Screen.debugPrint(20,45, firmware, colores.blanco, TOP_SCREEN)
-	Screen.debugPrint(20,60, kernel, colores.blanco, TOP_SCREEN)
+	Screen.debugPrint(20,30,cumpleF, colores. blanco, TOP_SCREEN)
+	Screen.debugPrint(20,45, firmwareF, colores.blanco, TOP_SCREEN)
+	Screen.debugPrint(20,60, kernelF, colores.blanco, TOP_SCREEN)
 	
-	Screen.debugPrint(0,0, hora, colores.verde, BOTTOM_SCREEN)
-	Screen.debugPrint(100,0, fecha, colores.verde, BOTTOM_SCREEN)
-	Screen.debugPrint(200, 0, bateria, colores.rojo, BOTTOM_SCREEN)	
+	Screen.debugPrint(0,0, horaF, colores.verde, BOTTOM_SCREEN)
+	Screen.debugPrint(100,0, fechaF, colores.verde, BOTTOM_SCREEN)
+	Screen.debugPrint(200, 0, bateriaF, colores.rojo, BOTTOM_SCREEN)	
 	Screen.debugPrint(0,50, "Pulsa B para cerrar", colores.azul, BOTTOM_SCREEN)
     Screen.flip()
 end
 
-function getVariables()
-	usuario = System.getUsername() 
-	cumpledia, cumplemes = System.getBirthday()
-	firm1, firm2, firm3 = System.getFirmware() 
-	kernel1, kernel2, kernel3 = System.getKernel() 
-	region = System.getRegion() 
-	bateria = System.getBatteryLife() 
-	h,m,s = System.getTime() 
-	d, mes, ano = System.getDate() 
-	if d == 1 then d = "Lun" end
-	if d == 2 then d = "Mar" end
-	if d == 3 then d = "Mie" end
-	if d == 4 then d = "Jue" end
-	if d == 5 then d = "Vie" end
-	if d == 6 then d = "Sab" end
-	if d == 7 then d = "Dom" end
-	
+function init()
 
-	fecha = d .. '/' .. mes .. '/' .. ano
-	hora = h .. ':' .. m .. ':' .. s
-	cumple = "Cumple: " .. cumpledia .. '-' .. cumplemes
-	firmware = "Ver. " .. firm1 .. firm2 .. firm3 .. ' ' .. region
-	kernel = "Kernel: " .. kernel1 .. kernel2 .. kernel3
-	bateria = bateria .. "%"
+	--definimos variables locales
+	local usu = System.getUsername()
+	local cumD, cumM = System.getBirthday()
+	local f1, f2, f3 = System.getFirmware()
+	local k1, k2, k3 = System.getKernel()
+	local reg = System.getRegion()
+	local bat = System.getBatteryLife()
+	local h1, m1, s1 = System.getTime()
+	local d2, m2, a2 = System.getDate()
+
+	--formateamos el texto
+	local fecha = formateaFecha(d2, m2, a2)
+	local hora = formateaHora(h1, m1, s1)
+	local firmware = formateaFirmware(f1, f2, f3, reg)
+	local vKernel = formateaVersionKernel(k1, k2, k3)
+	local cumpleanos = formateaCumple(cumD, cumM)
+	local batt = formateaBateria(bat)	
 	
+	--pasamos las variables locales a las globales para no ensuciar las globales
+	usuario = usu
+	cumpledia = cumD;	cumplemes = cumM
+	f1 = firm1;	f2 = firm2;	f3 = firm3
+	k1 = kernel1;	k2 = kernel2;	k3 = kernel3	
+	region = reg
+	bateria = bat
+	h1 = h;	m1 = m;	s1 = s
+	d2 = d;	m2 = mes; a2 = ano
+	
+	--pasamos las variables formateadas
+	fechaF = fecha
+	horaF = hora
+	firmwareF = firmware
+	kernelF = vKernel
+	cumpleF = cumpleanos	
+	bateriaF = batt
+end
+function formateaFecha(d2, m2, a2)
+
+	--variable temporal para no manipular la variable d2
+	local res = d2
+	
+	--bucle "switch"
+	if res == 1 then res = "Lun" end
+	if res == 2 then res = "Mar" end
+	if res == 3 then res = "Mie" end
+	if res == 4 then res = "Jue" end
+	if res == 5 then res = "Vie" end
+	if res == 6 then res = "Sab" end
+	if res == 7 then res = "Dom" end	
+	
+	local fecha = res .. '/' .. m2 .. '/' .. a2
+	
+	return fecha
+end
+function formateaHora(h1, m1, s1)
+	local a = h1
+	local b = m1
+	local c = s1
+	
+	--TODO si tiene menos de dos cifras poner el cero delante: 1 -> 01
+	
+	local hora = a .. ':' .. b .. ':' .. c
+	return hora
+end
+function formateaFirmware(f1, f2, f3, reg)
+	local a = f1
+	local b = f2
+	local c = f3
+	local i = reg
+	
+	--TODO formatear a base 10 inverso el firmware
+	--TODO formatear la region 
+	
+	local firmware = "Ver. " .. a .. b .. c .. ' ' .. i
+	return firmware
+end
+function formateaVersionKernel(k1, k2, k3)
+	local a = k1
+	local b	= k2
+	local c = k3
+	
+	--TODO lo mismo que firmware
+	
+	local vKernel = "Kernel: " .. a .. b .. c
+
+	return vKernel
+end
+function formateaCumple(cumD, cumM)
+	local a = cumD
+	local b = cumM
+	
+	--TODO igual que la hora
+	
+	local cumpleanos = "Cumple: " .. a .. '-' .. b
+	return cumpleanos
+end
+function formateaBateria(bat)
+	local a = bat
+	
+	--TODO formatear bateria
+	
+	local batt = a .. "%"
+	
+	return batt
 end
 
+init()
 main()
 while true do
 	pad = Controls.read()
@@ -84,39 +161,20 @@ while true do
 		System.exit()	
 	end	
 	
-	hn, mn, sn = System.getTime()
-	if not sn == s then		
-		refresca();
-	end
---	checkNuevaBateria()
---	checkNuevaFecha()
-end
-
-
-
-function refresca()
-    Screen.refresh()
-	Screen.clear(BOTTOM_SCREEN)
-		
-	h,m,s = System.getTime() 		
-	hora = h .. ':' .. m .. ':' .. s
+	Screen.waitVblankStart() 
+	Screen.clear(BOTTOM_SCREEN)	
+	
+	local h1, m1, s1 = System.getTime()
+	local d2, m2, a2 = System.getDate()
+	local bat = System.getBatteryLife()
+	
+	local hora = formateaHora(h1, m1, s1)
+	local fecha = formateaFecha(d2, m2, a2)
+	local batt = formateaBateria(bat)		
 	
 	Screen.debugPrint(0,0, hora, colores.verde, BOTTOM_SCREEN)
 	Screen.debugPrint(100,0, fecha, colores.verde, BOTTOM_SCREEN)
-	Screen.debugPrint(220, 0, bateria, colores.rojo, BOTTOM_SCREEN)	
-	Screen.debugPrint(0,150, "Pulsa B para cerrar", colores.azul, BOTTOM_SCREEN)
-    Screen.flip()
-end
-
-function checkNuevaBateria()
-	if not bateria == System.getBatteryLife() then
-		main();
-	end
-end
-
-function checkNuevaFecha()
-	dn, mn, an = System.getDate()
-	if not dn == d or not mn == mes or not an == ano then
-		main();
-	end
+	Screen.debugPrint(280, 0, batt, colores.rojo, BOTTOM_SCREEN)	
+	Screen.debugPrint(0,200, "Pulsa B para cerrar", colores.azul, BOTTOM_SCREEN)
+	Screen.waitVblankStart() 
 end
